@@ -8,12 +8,12 @@ namespace Simbolyc
     /// </summary>
     public sealed class VariableTest
     {
-        [Fact]
-        public void ValidConstruction()
-        {
-            Variable x = new Variable("x");
-            Assert.Equal("x", x.Name);
-        }
+        [Theory]
+        [InlineData("x")]
+        [InlineData("x1")]
+        [InlineData("x_1")]
+        [InlineData("?????????????????????????????????????????????????")]
+        public void ValidConstruction(string name) => Assert.Equal(name, new Variable(name).Name);
 
         [Theory]
         [InlineData(null)]
@@ -22,20 +22,15 @@ namespace Simbolyc
         [InlineData(" ab")]
         [InlineData("a b")]
         [InlineData("ab ")]
-        public void InvalidContruction(string name)
-        {
-            // Assert exception
-            ArgumentException e = Assert.ThrowsAny<ArgumentException>(() => new Variable(name));
-
-            // Assert excepton has a valid message
-            Assert.False(string.IsNullOrWhiteSpace(e.Message));
-        }
+        [InlineData("ab;")]
+        [InlineData("a+b")]
+        [InlineData("a,b")]
+        [InlineData("a, b")]
+        [InlineData("0ab")]
+        [InlineData("0123")]
+        public void InvalidContruction(string name) => Assert.ThrowsAny<ArgumentException>(() => new Variable(name));
 
         [Fact]
-        public void StringConversion()
-        {
-            Variable abc = new Variable("abc");
-            Assert.Equal("abc", abc.ToString());
-        }
+        public void StringConversion() => Assert.Equal("abc", new Variable("abc").ToString());
     }
 }

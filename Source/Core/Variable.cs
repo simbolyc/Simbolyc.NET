@@ -7,6 +7,10 @@ namespace Simbolyc
     /// </summary>
     public sealed class Variable : Expression
     {
+        private const string NUMBERS = @"0123456789";
+        private const string INVALID = " +-*/,.;`~!@#$%^&()=:\\\"'";
+
+
         /// <summary>
         /// Gets the name of the variable.
         /// </summary>
@@ -18,7 +22,7 @@ namespace Simbolyc
         /// </summary>
         /// <param name="name">Variable name</param>
         /// <exception cref="ArgumentNullException">If name is null</exception>
-        /// <exception cref="ArgumentException">If name is empty or has whitespace</exception>
+        /// <exception cref="ArgumentException">If name is empty or has invalid characters</exception>
         public Variable(string name)
         {
             if (name == null)
@@ -31,9 +35,14 @@ namespace Simbolyc
                 throw new ArgumentException("Name is empty.");
             }
 
-            if (name.Contains(" "))
+            if (NUMBERS.IndexOf(name[0]) >= 0)
             {
-                throw new ArgumentException("Name contains whitespace.");
+                throw new ArgumentException("Name starts with a number");
+            }
+
+            if (name.IndexOfAny(INVALID.ToCharArray()) >= 0)
+            {
+                throw new ArgumentException("Name contains invalid character");
             }
 
             // Assign to property
